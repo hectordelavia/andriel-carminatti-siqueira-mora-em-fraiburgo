@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartão Premium — Black Edition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #050505 0%, #1a1a2e 50%, #0f0f1a 100%);
+            padding: 2rem;
+        }
+
+        .pagina {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 🌟 CARTÃO ESTILO BLACK CARD */
+        .cartao {
+            width: 420px;
+            height: 260px;
+            margin-bottom: 2.5rem;
+            perspective: 1000px;
+        }
+
+        .cartao-interno {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .cartao:hover .cartao-interno {
+            transform: rotateY(180deg);
+        }
+
+        .cartao-frente, .cartao-verso {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 40px rgba(212, 175, 55, 0.15),
+                0 15px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        /* FRENTE — Preto brilhante + detalhes dourados */
+        .cartao-frente {
+            background: linear-gradient(145deg, #000000 0%, #121212 50%, #1c1c1c 100%);
+            border: 1px solid transparent;
+            background-image: 
+                linear-gradient(#000, #000),
+                linear-gradient(135deg, #d4af37, #f4e4bc, #d4af37, #b8941f);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: left;
+        }
+
+        .topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-cartao {
+            color: #d4af37;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .chip {
+            width: 50px;
+            height: 38px;
+            background: linear-gradient(135deg, #d4af37, #f4e4bc, #d4af37);
+            border-radius: 6px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .numero-cartao {
+            font-size: 1.4rem;
+            color: #fff;
+            letter-spacing: 4px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 5px rgba(255,255,255,0.2);
+        }
+
+        .meio {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .dados-grupo {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .rotulo {
+            font-size: 0.6rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .valor {
+            font-size: 1rem;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .bandeira {
+            color: #d4af37;
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        /* VERSO */
+        .cartao-verso {
+            background: linear-gradient(145deg, #050505 0%, #151515 100%);
+            transform: rotateY(180deg);
+            border: 1px solid #d4af37;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tarja-mag {
+            height: 45px;
+            background: linear-gradient(90deg, #222, #333, #222);
+            margin-top: 1.5rem;
+        }
+
+        .conteudo-verso {
+            padding: 1.5rem 2rem;
+            text-align: left;
+            flex: 1;
+        }
+
+        .info-texto {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .info-texto span {
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        .assinatura {
+            height: 30px;
+            background: linear-gradient(90deg, #d4af37, #f4e4bc, #d4af37);
+            opacity: 0.7;
+            margin: 0.5rem 0;
+            border-radius: 2px;
+        }
+
+        .rodape-verso {
+            text-align: center;
+            padding: 1rem;
+            color: #666;
+            font-size: 0.75rem;
+            border-top: 1px solid #222;
+        }
+
+        /* 🔴 DESFOQUE */
+        .desfocado {
+            filter: blur(8px);
+            opacity: 0.2;
+            user-select: none;
+            pointer-events: none;
+            transition: all 0.8s ease;
+        }
+
+        .revelado {
+            filter: blur(0);
+            opacity: 1;
+            user-select: auto;
+            pointer-events: auto;
+        }
+
+        /* CAIXA DE COMPRA */
+        .caixa-compra {
+            width: 100%;
+            background: linear-gradient(145deg, #0f0f1a, #1a1a2e);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            border: 1px solid #d4af3750;
+            text-align: center;
+        }
+
+        .caixa-compra h2 {
+            color: #d4af37;
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .descricao {
+            color: #aaa;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .preco {
+            margin-bottom: 1.5rem;
+        }
+
+        .valor {
+            font-size: 2.4rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #d4af37, #f4e4bc, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .parcela {
+            font-size: 0.9rem;
+            color: #777;
+            margin-top: 0.3rem;
+        }
+
+        .botoes {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .btn {
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-comprar {
+            background: linear-gradient(90deg, #d4af37, #f4e4bc, #d4af37);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-comprar:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-whatsapp {
+            background: #25d366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background: #20bd5a;
+            transform: scale(1.03);
+        }
+
+        .aviso {
+            margin-top: 1.2rem;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 480px) {
+            .cartao {
+                width: 100%;
+                max-width: 360px;
+                height: 220px;
+            }
+            .cartao-frente, .cartao-verso {
+                padding: 1.2rem;
+            }
+            .numero-cartao {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="pagina">
+
+        <!-- 💳 CARTÃO ESTILO BLACK CARD -->
+        <div class="cartao">
+            <div class="cartao-interno">
+                <!-- FRENTE -->
+                <div class="cartao-frente">
+                    <div class="topo">
+                        <span class="logo-cartao">CENTURION</span>
+                        <div class="chip"></div>
+                    </div>
+
+                    <div class="numero-cartao desfocado">
+                        •••• •••• •••• 0000
+                    </div>
+
+                    <div class="meio">
+                        <div class="dados-grupo">
+                            <span class="rotulo">Nome</span>
+                            <span class="valor desfocado">SEU NOME</span>
+                        </div>
+                        <div class="dados-grupo">
+                            <span class="rotulo">Validade</span>
+                            <span class="valor desfocado">00/00</span>
+                        </div>
+                        <div class="bandeira">AMEX</div>
+                    </div>
+                </div>
+
+                <!-- VERSO -->
+                <div class="cartao-verso">
+                    <div class="tarja-mag"></div>
+                    <div class="conteudo-verso">
+                        <p class="info-texto desfocado">
+                            <span>Contato:</span> seuemail@exemplo.com<br>
+                            <span>Telefone:</span> (49) 9 9999-9999<br>
+                            <span>Local:</span> Santa Catarina — Brasil
+                        </p>
+                        <div class="assinatura desfocado"></div>
+                    </div>
+                    <div class="rodape-verso desfocado">
+                        Cartão de Edição Exclusiva — Feito com Excelência
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAIXA DE COMPRA -->
+        <div class="caixa-compra">
+            <h2>Cartão Black Edition</h2>
+            <p class="descricao">
+                Design exclusivo inspirado nos cartões mais prestigiados do mundo. 
+                Acabamento premium preto com detalhes em ouro. Arquivo pronto para impressão.
+            </p>
+
+            <div class="preco">
+                <span class="valor">R$ 49,90</span>
+                <p class="parcela">À vista · Arquivo em alta resolução</p>
+            </div>
+
+            <div class="botoes">
+                <button class="btn btn-comprar" id="btnComprar" onclick="revelarTudo()">
+                    🔓 Comprar & Revelar
+                </button>
+                
+                <a href="https://wa.me/5549999999999?text=Olá! Quero o Cartão Black Edition" 
+                   target="_blank" class="btn btn-whatsapp">💬 Falar no WhatsApp</a>
+            </div>
+
+            <p class="aviso">
+                ✅ Personalizado com seus dados · ✅ Frente e Verso · ✅ Pronto para impressão
+            </p>
+        </div>
+
+    </div>
+
+    <!-- ⚡ REVELA OS DADOS AO CLICAR -->
+    <script>
+        function revelarTudo() {
+            const elementos = document.querySelectorAll('.desfocado');
+            elementos.forEach(el => {
+                el.classList.remove('desfocado');
+                el.classList.add('revelado');
+            });
+
+            const btn = document.getElementById('btnComprar');
+            btn.innerHTML = '✅ Revelado!';
+            btn.style.opacity = '0.8';
+            btn.disabled = true;
+        }
+    </script>
+</body>
+</html>
